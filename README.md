@@ -92,5 +92,3 @@ Lunch-Box-Backend/
 - Bonus features implementation
 
 ---
-
-Made with ❤️ for the Revolynk Backend Developer Assignment
