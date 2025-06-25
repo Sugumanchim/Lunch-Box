@@ -1,26 +1,51 @@
-const { subscriptions } = require('../models/dataStore');
-let subscriptionIdCounter = 1;
+let subscriptions = []; // In-memory store
 
-exports.createSubscription = (req, res) => {
-  const { userId, planType, startDate } = req.body;
-  const days = planType === 'Weekly' ? 7 : 30;
-  const end = new Date(startDate);
-  end.setDate(end.getDate() + days);
+// Create subscription
+const createSubscription = (req, res) => {
+  const { userId, startDate, endDate } = req.body;
+  if (!userId || !startDate || !endDate) {
+    return res.status(400).json({ message: 'All fields required' });
+  }
 
-  const subscription = {
-    subscriptionId: `s${subscriptionIdCounter++}`,
-    userId,
-    planType,
-    startDate,
-    endDate: end.toISOString().split('T')[0]
-  };
-
-  subscriptions.push(subscription);
-  res.json(subscription);
+  const sub = { id: Date.now(), userId, startDate, endDate };
+  subscriptions.push(sub);
+  res.status(201).json(sub);
 };
 
-exports.getSubscription = (req, res) => {
-  const sub = subscriptions.find(s => s.userId === req.params.userId);
-  if (sub) res.json(sub);
-  else res.status(404).json({ message: 'Subscription not found' });
+// Get all subscriptions
+const getAllSubscriptions = (req, res) => {
+  res.json(subscriptions);
+};
+
+// Get subscription by ID
+const getSubscriptionById = (req, res) => {
+  const sub = subscriptions.find(s => s.id == req.params.id);
+  if (!sub) return res.status(404).json({ message: 'Subscription not found' });
+  res.json(sub);
+};
+
+// Update subscription
+const updateSubscription = (req, res) => {
+  const sub = subscriptions.find(s => s.id == req.params.id);
+  if (!sub) return res.status(404).json({ message: 'Subscription not found' });
+
+  const { userId, startDate, endDate } = req.body;
+  if (userId) sub.userId = userId;
+  if (startDate) sub.startDate = startDate;
+  if (endDate) sub.endDate = endDate;
+  res.json(sub);
+};
+
+// Delete subscription
+const deleteSubscription = (req, res) => {
+  subscriptions = subscriptions.filter(s => s.id != req.params.id);
+  res.json({ message: 'Subscription deleted' });
+};
+
+module.exports = {
+  createSubscription,
+  getAllSubscriptions,
+  getSubscriptionById,
+  updateSubscription,
+  deleteSubscription
 };
