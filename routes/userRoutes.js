@@ -1,17 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const {
-  registerUser,
-  getUsers,
-  getUserById,
-  updateUser,
-  deleteUser
-} = require('../controllers/userController');
+// Login user
+router.post('/login', (req, res) => {
+  const { email } = req.body;
+  const user = users.find(u => u.email === email);
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid email' });
+  }
 
-router.post('/register', registerUser);
-router.get('/', getUsers);
-router.get('/:id', getUserById);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
-
-module.exports = router;
+  // Simulate token
+  const token = `token-${user.id}`;
+  res.json({ message: 'Login successful', token });
+});
