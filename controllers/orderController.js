@@ -1,56 +1,61 @@
-let orders = []; // In-memory store
+const { orders, mealBoxes } = require('../models/dataStore');
 
-// Create order
+let orderCounter = 1;
+
 const placeOrder = (req, res) => {
-  const { userId, mealId, date } = req.body;
-  if (!userId || !mealId || !date) {
+  const { userId, items, deliveryDate } = req.body;
+
+  if (!userId || !items || !deliveryDate) {
     return res.status(400).json({ message: 'All fields required' });
   }
 
-  const newOrder = { id: Date.now(), userId, mealId, date };
+  const totalAmount = items.reduce((sum, id) => {
+    const item = mealBoxes.find(m => m.id === id);
+    return item ? sum + item.price : sum;
+  }, 0);
+
+  const newOrder = {
+    orderId: `o${orderCounter++}`,
+    userId,
+    items,
+    totalAmount,
+    deliveryDate,
+    status: 'Preparing'
+  };
+
   orders.push(newOrder);
   res.status(201).json(newOrder);
 };
 
-// Get all orders
-const getAllOrders = (req, res) => {
-  res.json(orders);
-};
+const getAllOrders = (req, res) => res.json(orders);
 
-// Get one order by ID
 const getOrderById = (req, res) => {
-  const order = orders.find(o => o.id == req.params.id);
-  if (!order) {
-    return res.status(404).json({ message: 'Order not found' });
-  }
+  const order = orders.find(o => o.orderId === req.params.id);
+  if (!order) return res.status(404).json({ message: 'Order not found' });
   res.json(order);
 };
 
-// Optional: Get orders by userId
-const getOrdersByUserId = (req, res) => {
-  const userOrders = orders.filter(o => o.userId == req.params.userId);
-  res.json(userOrders);
-};
-
-// Update an order
 const updateOrder = (req, res) => {
-  const order = orders.find(o => o.id == req.params.id);
-  if (!order) {
-    return res.status(404).json({ message: 'Order not found' });
-  }
+  const order = orders.find(o => o.orderId === req.params.id);
+  if (!order) return res.status(404).json({ message: 'Order not found' });
 
-  const { userId, mealId, date } = req.body;
-  if (userId) order.userId = userId;
-  if (mealId) order.mealId = mealId;
-  if (date) order.date = date;
+  const { status } = req.body;
+  if (status) order.status = status;
 
   res.json(order);
 };
 
-// Delete an order
 const deleteOrder = (req, res) => {
-  orders = orders.filter(o => o.id != req.params.id);
+  const index = orders.findIndex(o => o.orderId === req.params.id);
+  if (index === -1) return res.status(404).json({ message: 'Order not found' });
+
+  orders.splice(index, 1);
   res.json({ message: 'Order deleted' });
+};
+
+const getOrdersByUserId = (req, res) => {
+  const userOrders = orders.filter(o => o.userId === req.params.userId);
+  res.json(userOrders);
 };
 
 module.exports = {
