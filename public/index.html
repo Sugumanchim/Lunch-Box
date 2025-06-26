@@ -9,21 +9,16 @@
   <form id="registerForm">
     <label for="name">Name:</label>
     <input type="text" id="name" required><br><br>
-
     <button type="submit">Register</button>
   </form>
-
   <h3>Response:</h3>
   <pre id="response"></pre>
-
   <script>
     const form = document.getElementById('registerForm');
     const responseBox = document.getElementById('response');
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('name').value;
-
       const res = await fetch('/register', {
         method: 'POST',
         headers: {
@@ -31,7 +26,6 @@
         },
         body: JSON.stringify({ name })
       });
-
       const data = await res.json();
       responseBox.textContent = JSON.stringify(data, null, 2);
     });
