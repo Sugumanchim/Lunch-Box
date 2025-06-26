@@ -1,0 +1,50 @@
+<!-- order.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Place Order - The Lunch Box</title>
+</head>
+<body>
+  <h2>Place a Meal Order</h2>
+  <form id="orderForm">
+    <label>User ID:</label><br>
+    <input type="text" id="userId" required><br><br>
+
+    <label>Items (comma separated meal IDs):</label><br>
+    <input type="text" id="items" required><br><br>
+
+    <label>Delivery Date:</label><br>
+    <input type="date" id="deliveryDate" required><br><br>
+
+    <label>Status:</label><br>
+    <input type="text" id="status" value="Pending"><br><br>
+
+    <button type="submit">Place Order</button>
+  </form>
+
+  <h3>Response:</h3>
+  <pre id="responseBox">No response yet</pre>
+
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const userId = document.getElementById('userId').value;
+      const items = document.getElementById('items').value.split(',').map(i => i.trim());
+      const deliveryDate = document.getElementById('deliveryDate').value;
+      const status = document.getElementById('status').value;
+
+      const response = await fetch('/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer dummy-token' // if auth middleware is used
+        },
+        body: JSON.stringify({ userId, items, deliveryDate, status })
+      });
+
+      const data = await response.json();
+      document.getElementById('responseBox').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
