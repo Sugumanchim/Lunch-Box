@@ -7,7 +7,7 @@ const placeOrder = (req, res) => {
     return res.status(400).json({ message: 'All fields required' });
   }
 
-  const totalAmount = items.length * 100; 
+  const totalAmount = items.length * 100; // Dummy pricing
   const order = {
     orderId: `o${orderIdCounter++}`,
     userId,
@@ -30,3 +30,4 @@ module.exports = {
   placeOrder,
   getOrdersByUserId
 };
+
