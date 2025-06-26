@@ -1,8 +1,6 @@
-// controllers/subscriptionController.js
 const { subscriptions } = require('../models/dataStore');
 let subscriptionIdCounter = 1;
 
-// Create subscription
 const createSubscription = (req, res) => {
   const { userId, planType, startDate, endDate } = req.body;
 
@@ -22,12 +20,9 @@ const createSubscription = (req, res) => {
   res.status(201).json(newSubscription);
 };
 
-// Get all subscriptions
 const getAllSubscriptions = (req, res) => {
   res.json(subscriptions);
 };
-
-// Get subscription by subscriptionId
 const getSubscriptionById = (req, res) => {
   const subId = req.params.id;
   const subscription = subscriptions.find(sub => sub.subscriptionId === subId);
@@ -67,8 +62,6 @@ const updateSubscription = (req, res) => {
 
   res.json(subscription);
 };
-
-// Delete subscription
 const deleteSubscription = (req, res) => {
   const subId = req.params.id;
   const index = subscriptions.findIndex(sub => sub.subscriptionId === subId);
