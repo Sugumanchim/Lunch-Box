@@ -50,8 +50,7 @@ A Node.js Express-based RESTful backend service for managing a scheduled lunch b
 - `GET /mealbox` → List all meal boxes
 
 ### Notification (Bonus)
-- `POST /notify` → Send mock notification (optional)
-
+- `POST /notify` → Send mock notification 
 ## 🔐 Authentication
 
 For protected routes, include this header:
