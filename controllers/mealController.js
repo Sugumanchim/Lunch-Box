@@ -1,6 +1,4 @@
-let meals = []; // In-memory meal storage
-
-// Create a meal
+let meals = []; 
 const createMeal = (req, res) => {
   const { name, price, type } = req.body;
   if (!name || !price || !type) {
@@ -12,19 +10,15 @@ const createMeal = (req, res) => {
   res.status(201).json(newMeal);
 };
 
-// Get all meals
+
 const getAllMeals = (req, res) => {
   res.json(meals);
 };
-
-// Get a meal by ID
 const getMealById = (req, res) => {
   const meal = meals.find(m => m.id == req.params.id);
   if (!meal) return res.status(404).json({ message: 'Meal not found' });
   res.json(meal);
 };
-
-// Update a meal
 const updateMeal = (req, res) => {
   const meal = meals.find(m => m.id == req.params.id);
   if (!meal) return res.status(404).json({ message: 'Meal not found' });
@@ -36,8 +30,6 @@ const updateMeal = (req, res) => {
 
   res.json(meal);
 };
-
-// Delete a meal
 const deleteMeal = (req, res) => {
   meals = meals.filter(m => m.id != req.params.id);
   res.json({ message: 'Meal deleted' });
