@@ -48,62 +48,47 @@
   </style>
 </head>
 <body>
-
   <h2>Subscribe to a Plan</h2>
-
   <form id="subscriptionForm">
     <label for="userId">User ID:</label>
     <input type="text" id="userId" required>
-
     <label for="planType">Plan Type:</label>
     <select id="planType" required>
       <option value="">Select</option>
       <option value="Weekly">Weekly</option>
       <option value="Monthly">Monthly</option>
     </select>
-
     <label for="startDate">Start Date:</label>
     <input type="date" id="startDate" required>
-
     <label for="endDate">End Date:</label>
     <input type="date" id="endDate" required>
-
     <button type="submit">Subscribe</button>
   </form>
-
   <pre id="response" style="color: #d9534f;"></pre>
-
   <script>
     const form = document.getElementById('subscriptionForm');
     const responseDiv = document.getElementById('response');
-
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-
       const userId = document.getElementById('userId').value.trim();
       const planType = document.getElementById('planType').value;
       const startDateInput = document.getElementById('startDate').value;
       const endDateInput = document.getElementById('endDate').value;
-
       if (!userId || !planType || !startDateInput || !endDateInput) {
         responseDiv.textContent = ' All fields are required.';
         return;
       }
-
       const startDate = new Date(startDateInput);
       const endDate = new Date(endDateInput);
       const diffDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
-
       if (planType === 'Weekly' && diffDays !== 7) {
         responseDiv.textContent = ' Weekly plan must be exactly 7 days.';
         return;
       }
-
       if (planType === 'Monthly' && (diffDays < 28 || diffDays > 31)) {
         responseDiv.textContent = ' Monthly plan must be between 28 and 31 days.';
         return;
       }
-
       fetch('/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -131,6 +116,5 @@
       });
     });
   </script>
-
 </body>
 </html>
