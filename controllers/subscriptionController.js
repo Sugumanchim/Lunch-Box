@@ -1,11 +1,35 @@
-const { subscriptions } = require('../models/dataStore');
+const { subscriptions, users } = require('../models/dataStore');
 let subscriptionIdCounter = 1;
+
+function getDaysDiff(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  return (endDate - startDate) / (1000 * 60 * 60 * 24);
+}
 
 const createSubscription = (req, res) => {
   const { userId, planType, startDate, endDate } = req.body;
 
   if (!userId || !planType || !startDate || !endDate) {
     return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const userExists = users.find(u => u.id === userId);
+  if (!userExists) {
+    return res.status(404).json({ message: 'User not found. Please register first.' });
+  }
+
+  const validPlans = ['Weekly', 'Monthly'];
+  if (!validPlans.includes(planType)) {
+    return res.status(400).json({ message: 'Invalid plan type. Choose Weekly or Monthly.' });
+  }
+
+  const duration = getDaysDiff(startDate, endDate);
+  if (planType === 'Weekly' && duration !== 7) {
+    return res.status(400).json({ message: 'Weekly plan must be exactly 7 days long.' });
+  }
+  if (planType === 'Monthly' && (duration < 28 || duration > 31)) {
+    return res.status(400).json({ message: 'Monthly plan must be 28 to 31 days long.' });
   }
 
   const newSubscription = {
@@ -23,6 +47,7 @@ const createSubscription = (req, res) => {
 const getAllSubscriptions = (req, res) => {
   res.json(subscriptions);
 };
+
 const getSubscriptionById = (req, res) => {
   const subId = req.params.id;
   const subscription = subscriptions.find(sub => sub.subscriptionId === subId);
@@ -34,19 +59,17 @@ const getSubscriptionById = (req, res) => {
   res.json(subscription);
 };
 
-// Get subscription by userId
 const getSubscriptionByUserId = (req, res) => {
   const userId = req.params.userId;
-  const subscription = subscriptions.find(sub => sub.userId === userId);
+  const userSubs = subscriptions.filter(sub => sub.userId === userId);
 
-  if (!subscription) {
-    return res.status(404).json({ message: 'Subscription not found for user' });
+  if (userSubs.length === 0) {
+    return res.status(404).json({ message: 'No subscriptions found for this user.' });
   }
 
-  res.json(subscription);
+  res.json(userSubs);
 };
 
-// Update subscription
 const updateSubscription = (req, res) => {
   const subId = req.params.id;
   const subscription = subscriptions.find(sub => sub.subscriptionId === subId);
@@ -62,6 +85,7 @@ const updateSubscription = (req, res) => {
 
   res.json(subscription);
 };
+
 const deleteSubscription = (req, res) => {
   const subId = req.params.id;
   const index = subscriptions.findIndex(sub => sub.subscriptionId === subId);
