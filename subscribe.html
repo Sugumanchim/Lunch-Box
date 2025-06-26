@@ -1,53 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Subscribe - The Lunch Box</title>
+  <meta charset="UTF-8">
+  <title>Create Subscription</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f4f4f4;
+    }
+    h2 {
+      color: #333;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    pre {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-  <h2>Create a Subscription</h2>
-  <form id="subscriptionForm">
-    <label>User ID:</label><br>
-    <input type="text" id="userId" required><br><br>
 
-    <label>Plan Type:</label><br>
+  <h2>Subscribe to a Plan</h2>
+
+  <form id="subscriptionForm">
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId" required>
+
+    <label for="planType">Plan Type:</label>
     <select id="planType" required>
+      <option value="">Select</option>
       <option value="Weekly">Weekly</option>
       <option value="Monthly">Monthly</option>
-    </select><br><br>
+    </select>
 
-    <label>Start Date:</label><br>
-    <input type="date" id="startDate" required><br><br>
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" required>
 
-    <label>End Date:</label><br>
-    <input type="date" id="endDate" required><br><br>
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" required>
 
     <button type="submit">Subscribe</button>
   </form>
 
-  <h3>Subscription Response:</h3>
-  <pre id="subscriptionResponse">No response yet</pre>
+  <pre id="response" style="color: #d9534f;"></pre>
 
   <script>
-    document.getElementById('subscriptionForm').addEventListener('submit', async function (e) {
+    const form = document.getElementById('subscriptionForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      const userId = document.getElementById('userId').value;
+      const userId = document.getElementById('userId').value.trim();
       const planType = document.getElementById('planType').value;
-      const startDate = document.getElementById('startDate').value;
-      const endDate = document.getElementById('endDate').value;
+      const startDateInput = document.getElementById('startDate').value;
+      const endDateInput = document.getElementById('endDate').value;
 
-      const response = await fetch('/subscribe', {
+      if (!userId || !planType || !startDateInput || !endDateInput) {
+        responseDiv.textContent = ' All fields are required.';
+        return;
+      }
+
+      const startDate = new Date(startDateInput);
+      const endDate = new Date(endDateInput);
+      const diffDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+      if (planType === 'Weekly' && diffDays !== 7) {
+        responseDiv.textContent = ' Weekly plan must be exactly 7 days.';
+        return;
+      }
+
+      if (planType === 'Monthly' && (diffDays < 28 || diffDays > 31)) {
+        responseDiv.textContent = ' Monthly plan must be between 28 and 31 days.';
+        return;
+      }
+
+      fetch('/subscriptions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer secret123' // ✅ must match your middleware
-        },
-        body: JSON.stringify({ userId, planType, startDate, endDate })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          planType,
+          startDate: startDateInput,
+          endDate: endDateInput
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          responseDiv.style.color = '#d9534f'; 
+          responseDiv.textContent = ` ${data.error}`;
+        } else {
+          responseDiv.style.color = '#28a745'; 
+          responseDiv.textContent = 'Subscription successful:\n' + JSON.stringify(data, null, 2);
+        }
+      })
+      .catch(err => {
+        responseDiv.style.color = '#d9534f';
+        responseDiv.textContent = ' Error submitting subscription.';
+        console.error(err);
       });
-
-      const data = await response.json();
-      document.getElementById('subscriptionResponse').textContent = JSON.stringify(data, null, 2);
     });
   </script>
+
 </body>
 </html>
