@@ -1,94 +1,80 @@
 
-# 🍱 Lunch Box Backend API
+# The Lunch Box – Backend API
 
-Backend service for a scheduled lunch box ordering and subscription system.
+A Node.js Express-based RESTful backend service for managing a scheduled lunch box meal ordering and subscription system.
 
----
+## 📦 Project Structure
 
-## ✅ Tech Stack
-- Node.js
-- Express.js
-- In-memory storage (arrays/objects)
+- **app.js**: Main server file
+- **controllers/**: Business logic handlers
+- **routes/**: API route definitions
+- **models/**: In-memory data storage
+- **middleware/**: Authentication
+- **index.html**: User registration form
+- **order.html**: Place order form
+- **subscribe.html**: Subscription form
 
----
+## 🚀 Setup Instructions
 
-## 📁 Project Structure
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Start the server**
+   ```bash
+   node app.js
+   ```
+
+3. **Access in browser**
+   ```
+   http://localhost:3000/
+   ```
+
+## 📬 API Endpoints
+
+### User
+- `POST /register` → Register a new user
+- `GET /register` → Get all users
+
+### Order
+- `POST /order` → Place a new order (requires `Authorization: Bearer secret123`)
+- `GET /orders/:userId` → Get orders by user
+
+### Subscription
+- `POST /subscribe` → Create a subscription (requires auth)
+- `GET /subscription/:userId` → Get user subscription
+
+### MealBox
+- `POST /mealbox` → Add a new meal box
+- `GET /mealbox` → List all meal boxes
+
+### Notification (Bonus)
+- `POST /notify` → Send mock notification (optional)
+
+## 🔐 Authentication
+
+For protected routes, include this header:
 ```
-Lunch-Box-Backend/
-├── app.js
-├── package.json
-├── models/
-│   └── dataStore.js
-├── controllers/
-│   ├── userController.js
-│   ├── orderController.js
-│   ├── subscriptionController.js
-│   └── notifyController.js
-├── routes/
-│   ├── userRoutes.js
-│   ├── orderRoutes.js
-│   ├── subscriptionRoutes.js
-│   └── notifyRoutes.js
-└── middleware/
-    └── auth.js
+Authorization: Bearer secret123
 ```
 
----
+## 🧪 Sample Request
 
-## 📦 Setup Instructions
-
-> Server will run at: `http://localhost:3000/`
-
-## 🔌 API Endpoints
-
-### 1. Register User
-`POST /register`
+**POST /register**
 ```json
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "1234567890"
+  "name": "Maheswari",
+  "email": "maheswari@example.com"
 }
 ```
 
-### 2. Place Order
-`POST /order`
+**Response**
 ```json
 {
-  "userId": 1,
-  "items": ["Small Veg Box"],
-  "totalAmount": 250,
-  "deliveryDate": "2025-06-25"
+  "userId": "u1",
+  "name": "Maheswari",
+  "email": "maheswari@example.com"
 }
-```
 
-### 3. Get Order History
-`GET /orders/1`
 
-### 4. Subscribe
-`POST /subscribe`
-```json
-{
-  "userId": 1,
-  "planType": "Monthly",
-  "startDate": "2025-06-25",
-  "endDate": "2025-07-25"
-}
-```
-
-### 5. Get Subscription
-`GET /subscription/1`
-
----
-
-## 🎁 Bonus Features
-- ⏰ Cut-off time validation: Same-day orders must be placed before 9:30 AM PST
-- 🔔 Mock Notification Endpoint (to be added)
-
----
-## ✅ Evaluation Criteria
-- API design & logical handling
-- Code structure & clarity
-- Bonus features implementation
-
----
