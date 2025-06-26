@@ -10,7 +10,7 @@ const createSubscription = (req, res) => {
     subscriptionId: `s${subscriptionIdCounter++}`,
     userId,
     planType,
-    startDate,
+    startDate, 
     endDate
   };
   subscriptions.push(newSubscription);
