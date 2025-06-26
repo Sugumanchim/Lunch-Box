@@ -8,17 +8,10 @@ const {
   updateSubscription,
   deleteSubscription
 } = require('../controllers/subscriptionController');
-
 router.post('/', createSubscription);
-
 router.get('/', getAllSubscriptions);
-
 router.get('/:id', getSubscriptionById);
-
 router.get('/user/:userId', getSubscriptionByUserId);
-
 router.put('/:id', updateSubscription);
-
 router.delete('/:id', deleteSubscription);
-
 module.exports = router;
