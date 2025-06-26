@@ -7,7 +7,7 @@ const placeOrder = (req, res) => {
     return res.status(400).json({ message: 'All fields required' });
   }
 
-  const totalAmount = items.length * 100; // Dummy pricing
+  const totalAmount = items.length * 100; 
   const order = {
     orderId: `o${orderIdCounter++}`,
     userId,
