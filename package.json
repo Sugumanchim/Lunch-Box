@@ -1,12 +1,15 @@
 {
   "name": "lunch-box",
   "version": "1.0.0",
-  "description": "Backend for The Lunch Box meal system",
+  "description": "Backend service for The Lunch Box meal ordering and subscription system",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
+  "keywords": [],
+  "author": "Sugumanchi Maheswari",
+  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2"
