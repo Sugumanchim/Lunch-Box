@@ -5,3 +5,4 @@ const { notifyStatus } = require('../controllers/notifyController');
 router.post('/', notifyStatus);
 
 module.exports = router;
+  
