@@ -1,7 +1,6 @@
-const { users } = require('../models/dataStore'); // Shared users array
+const { users } = require('../models/dataStore'); 
 let userIdCounter = 1;
 
-// Register user
 const registerUser = (req, res) => {
   const { name, email, phone } = req.body;
 
@@ -24,20 +23,14 @@ const registerUser = (req, res) => {
   users.push(user);
   res.status(201).json(user);
 };
-
-// Get all users
 const getUsers = (req, res) => {
   res.json(users);
 };
-
-// Get user by ID
 const getUserById = (req, res) => {
   const user = users.find(u => u.userId === req.params.id);
   if (!user) return res.status(404).json({ message: 'User not found' });
   res.json(user);
 };
-
-// Update user
 const updateUser = (req, res) => {
   const user = users.find(u => u.userId === req.params.id);
   if (!user) return res.status(404).json({ message: 'User not found' });
@@ -49,8 +42,6 @@ const updateUser = (req, res) => {
 
   res.json(user);
 };
-
-// Delete user
 const deleteUser = (req, res) => {
   const index = users.findIndex(u => u.userId === req.params.id);
   if (index === -1) {
