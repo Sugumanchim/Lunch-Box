@@ -12,24 +12,30 @@ const orderRoutes = require('./routes/orderRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const notifyRoutes = require('./routes/notifyRoutes');
 
-// JSON parser middleware
-app.use(express.json());
+app.use(express.json()); // Parse JSON body
 
-// ✅ Serve static files (like index.html)
-app.use(express.static(path.join(__dirname)));
+// ✅ Serve the registration form
+app.get('/form', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// ✅ Serve the order form
+app.get('/order-form', (req, res) => {
+  res.sendFile(path.join(__dirname, 'order.html'));
+});
+
+// ✅ Serve the subscription form
+app.get('/subscribe-form', (req, res) => {
+  res.sendFile(path.join(__dirname, 'subscribe.html'));
+});
 
 // ✅ Root route
 app.get('/', (req, res) => {
   res.send('Welcome to The Lunch Box API!');
 });
 
-// ✅ Serve registration form at /form
-app.get('/form', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// ✅ API Routes
-app.use('/register', userRoutes); // Handles both GET and POST
+// ✅ Route handlers
+app.use('/register', userRoutes);
 app.use('/order', authMiddleware, orderRoutes);
 app.use('/orders', authMiddleware, orderRoutes);
 app.use('/subscribe', authMiddleware, subscriptionRoutes);
@@ -38,5 +44,5 @@ app.use('/notify', authMiddleware, notifyRoutes);
 
 // ✅ Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
