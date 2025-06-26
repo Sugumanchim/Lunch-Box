@@ -1,40 +1,28 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Lunch Box Registration</title>
-</head>
-<body>
-  <h2>Register User</h2>
-  <form id="registerForm">
-    <label>Name:</label><br>
-    <input type="text" id="name" required><br><br>
-    
-    <label>Email:</label><br>
-    <input type="email" id="email" required><br><br>
-    
-    <button type="submit">Register</button>
-  </form>
+<script>
+  async function fetchUsers() {
+    const res = await fetch('/register');
+    const users = await res.json();
+    document.getElementById('userList').textContent = JSON.stringify(users, null, 2);
+  }
 
-  <h3>Response:</h3>
-  <pre id="responseBox">No response yet</pre>
+  document.getElementById('registerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-  <script>
-    document.getElementById('registerForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
 
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-
-      const response = await fetch('https://scaling-garbanzo-4jgqj44rwr7wc7xqg-3000.app.github.dev/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email })
-      });
-
-      const data = await response.json();
-      document.getElementById('responseBox').textContent = JSON.stringify(data, null, 2);
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email })
     });
-  </script>
-</body>
-</html>
+
+    const data = await response.json();
+    document.getElementById('responseBox').textContent = JSON.stringify(data, null, 2);
+
+    await fetchUsers(); // Refresh list after adding
+  });
+
+  // Fetch existing users on page load
+  fetchUsers();
+</script>
