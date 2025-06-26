@@ -12,28 +12,31 @@ const orderRoutes = require('./routes/orderRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const notifyRoutes = require('./routes/notifyRoutes');
 
-// JSON parser
+// JSON parser middleware
 app.use(express.json());
 
-// Root route - welcome message
+// ✅ Serve static files (like index.html)
+app.use(express.static(path.join(__dirname)));
+
+// ✅ Root route
 app.get('/', (req, res) => {
   res.send('Welcome to The Lunch Box API!');
 });
 
-// Serve HTML file (optional frontend form)
+// ✅ Serve registration form at /form
 app.get('/form', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Routes
-app.use('/register', userRoutes);
+// ✅ API Routes
+app.use('/register', userRoutes); // Handles both GET and POST
 app.use('/order', authMiddleware, orderRoutes);
 app.use('/orders', authMiddleware, orderRoutes);
 app.use('/subscribe', authMiddleware, subscriptionRoutes);
 app.use('/subscription', authMiddleware, subscriptionRoutes);
 app.use('/notify', authMiddleware, notifyRoutes);
 
-// Start server
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
