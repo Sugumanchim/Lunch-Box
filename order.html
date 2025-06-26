@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>Place Order - The Lunch Box</title></head>
+<body>
+  <h2>Place a Meal Order</h2>
+  <form id="orderForm">
+    <label>User ID:</label><br><input type="text" id="userId" required><br><br>
+    <label>Meal ID:</label><br><input type="text" id="mealId" required><br><br>
+    <label>Date (YYYY-MM-DD):</label><br><input type="date" id="date" required><br><br>
+    <button type="submit">Place Order</button>
+  </form>
+  <h3>Order Response:</h3><pre id="orderResponse">No response yet</pre>
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const userId = document.getElementById('userId').value;
+      const mealId = document.getElementById('mealId').value;
+      const deliveryDate = document.getElementById('date').value;
+      const response = await fetch('/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer secret123'
+        },
+        body: JSON.stringify({ userId, items: [mealId], deliveryDate })
+      });
+      const data = await response.json();
+      document.getElementById('orderResponse').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
